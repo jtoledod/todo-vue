@@ -1,6 +1,7 @@
 # todo-vue
 
->A simple todo app made with Vue.js
+A simple todo app made with Vue.js<br/>
+Deployed at [https://jesusatd-todo-vue.netlify.app/](https://jesusatd-todo-vue.netlify.app/)
 
 ## Project setup
 ```
@@ -17,10 +18,3 @@ npm run serve
 npm run build
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
