@@ -1,6 +1,8 @@
 {
   "name": "todo-vue",
   "version": "0.1.0",
+  "description": "Todo app made with Vue.js",
+  "author": "Jesus Toledo",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
