@@ -22,7 +22,7 @@ export default {
 .logo{
   display: block;
   margin: 1rem auto;
-  height: 75px;
+  height: 4.2rem;
 }
 .title{
   font-size: 1.5rem;

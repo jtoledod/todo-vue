@@ -3,128 +3,52 @@
     <input type="text" placeholder="What do you have to do?"
     class="todo-input" v-model="newTodo"
     @keyup.enter="addTodo" />
-    <div v-for="todo in todosFiltered" :key="todo.id" class="todo-item">
-      <div class="todo-item-left">
-        <input type="checkbox" v-model="todo.completed">
-        <input
-        v-if="todo.editing"
-        type="text"
-        class="todo-item-input"
-        v-model="todo.title"
-        @blur="doneEdit(todo)"
-        @keyup.esc="cancelEdit(todo)"
-        v-focus/>
-        <div v-else
-        class="todo-item-label"
-        :class="{'completed':todo.completed}"
-        @dblclick="editTodo(todo)">{{todo.title}}</div>
-      </div>
-      <div class="remove-item"
-      @click="removeTodo(todo)">&times;</div>
+    <todo-items/>
+    <div class="extra-container">
+      <todo-check-all/>
+      <todo-items-left/>
     </div>
     <div class="extra-container">
-      <div><label><input type="checkbox"
-        @input="checkAllTodos" :checked="!anyRemaining">Check all</label></div>
-      <div>{{ remaining }} item(s) left</div>
-    </div>
-    <div class="extra-container">
-      <div>
-        <button :class="{active: filter == 'all'}"
-        @click="filter='all'">All</button>
-        <button :class="{active: filter == 'active'}"
-        :disabled="!anyRemaining"
-        @click="filter='active'">Active</button>
-        <button :class="{active: filter == 'completed'}"
-        :disabled="!anyCompleted"
-        @click="filter='completed'">Completed</button>
-      </div>
-      <div>
-        <button v-if="anyCompleted"
-        @click="clearCompleted">Clear completed</button>
-      </div>
+      <todo-filters/>
+      <todo-clear-completed/>
     </div>
   </div>
 </template>
 
 <script>
-import { todos } from '../Todos'
+import TodoCheckAll from './TodoCheckAll'
+import TodoClearCompleted from './TodoClearCompleted'
+import TodoFilters from './TodoFilters'
+import TodoItems from './TodoItems'
+import TodoItemsLeft from './TodoItemsLeft'
+
 export default {
   name: 'TodoList',
   data () {
     return {
       newTodo: '',
       editCache: '',
-      idForTodo: 5,
-      filter: 'all',
-      todos
+      idForTodo: 5
     }
   },
-  directives: {
-    focus: {
-      inserted (el) {
-        el.focus()
-      }
-    }
-  },
-  computed: {
-    remaining () {
-      return this.todos.filter(item => !item.completed).length
-    },
-    anyRemaining () {
-      return this.remaining !== 0
-    },
-    todosFiltered () {
-      if (this.filter === 'all') {
-        return this.todos
-      } else if (this.filter === 'active') {
-        return this.todos.filter(item => !item.completed)
-      } else if (this.filter === 'completed') {
-        return this.todos.filter(item => item.completed)
-      } else {
-        return []
-      }
-    },
-    anyCompleted () {
-      return this.todos.filter(item => item.completed).length > 0
-    }
+  components: {
+    TodoCheckAll,
+    TodoClearCompleted,
+    TodoFilters,
+    TodoItems,
+    TodoItemsLeft
   },
   methods: {
     addTodo () {
       if (this.newTodo.trim().length === 0) return
-      this.todos.push({
+      this.$store.commit('addTodo', {
         id: this.idForTodo,
         title: this.newTodo,
-        completed: false
+        completed: false,
+        editing: false
       })
       this.newTodo = ''
       this.idForTodo++
-    },
-    editTodo (todo) {
-      this.editCache = todo.title
-      todo.editing = true
-    },
-    cancelEdit (todo) {
-      todo.title = this.editCache
-      todo.editing = false
-    },
-    doneEdit (todo) {
-      if (this.newTodo.trim().length === 0) {
-        todo.title = this.editCache
-      }
-      todo.editing = false
-    },
-    removeTodo (todo) {
-      this.todos = this.todos.filter(item => item.id !== todo.id)
-    },
-    checkAllTodos () {
-      this.todos.forEach((todo) => { todo.completed = event.target.checked })
-      if (this.filter === 'active') this.filter = 'all'
-    },
-    clearCompleted () {
-      this.todos = this.todos.filter(item => !item.completed)
-      if (this.todos.length === 0) {
-
-      }
     }
   }
 }
@@ -213,11 +137,11 @@ export default {
   button:focus{
     outline: none;
   }
-  button.active{
-    background: rgba(0,117,255,.15);
-  }
   button:disabled{
     pointer-events: none;
-    opacity: 60%;
+    opacity: 0.6;
+  }
+  button.active{
+    background: rgba(0,117,255,.15);
   }
 </style>
